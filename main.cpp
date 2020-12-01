@@ -28,46 +28,46 @@
  * Using the above example again, the three entries that sum to 2020 are 979, 366, and
  *  675. Multiplying them together produces the answer, 241861950.
 
-In your expense report, what is the product of the three entries that sum to 2020?
+ In your expense report, what is the product of the three entries that sum to 2020?
 */
 #define DEBUG
 void debug_message(std::string message)
 {
 #ifdef DEBUG
-  std::cout << "advent_of_code DEBUG:" << message << "\n";
+    std::cout << "advent_of_code DEBUG:" << message << "\n";
 #endif
 }
 
 int day_1(bool use_stdin = false)
 {
-  int answer = 0;
-  std::ifstream test_input("day1-input");
-  std::vector<int> test_input_formatted(100);
-  for (; !test_input.eof() ;)
+    int answer = 0;
+    std::ifstream test_input("day1-input");
+    std::vector<int> test_input_formatted(100);
+    for (; !test_input.eof() ;)
     {
-      static int tmp;
-      test_input >> tmp;
-      test_input_formatted.push_back(tmp);
-      debug_message(std::to_string(tmp));
+        static int tmp;
+        test_input >> tmp;
+        test_input_formatted.push_back(tmp);
+        debug_message(std::to_string(tmp));
     }
-  test_input_formatted.shrink_to_fit();
-  for (const int& interogated : test_input_formatted)
+    test_input_formatted.shrink_to_fit();
+    for (const int& interogated : test_input_formatted)
     {
-      for (const int& interogator_1 : test_input_formatted)
+        for (const int& interogator_1 : test_input_formatted)
         {
-          for (const int& interogator_2 : test_input_formatted)
+            for (const int& interogator_2 : test_input_formatted)
             {
-              int result = interogated + interogator_1 + interogator_2;
-              debug_message(std::to_string(result));
-              // debug_message("" + std::to_string(result == 2020));
-              if (result == 2020)
-                  {
+                int result = interogated + interogator_1 + interogator_2;
+                debug_message(std::to_string(result));
+                // debug_message("" + std::to_string(result == 2020));
+                if (result == 2020)
+                {
                     answer = interogated * interogator_1 * interogator_2;
                     debug_message(std::to_string(answer));
                     std::cout << answer << "\n";
                     test_input.close();
                     return EXIT_SUCCESS;
-                  }
+                }
             }
         }
     }
@@ -75,11 +75,11 @@ int day_1(bool use_stdin = false)
 
 int main(int argc, char** argv)
 {
-  std::vector<int> puzzle_progress =
-    {
-      day_1(),
-    };
+    std::vector<int> puzzle_progress =
+        {
+            day_1(),
+        };
 
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
