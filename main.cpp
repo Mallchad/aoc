@@ -1,10 +1,12 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sys/wait.h>
 #include <vector>
 #include <set>
 #include <algorithm>
 #include <cstdlib>
+#include <sstream>
 /*
  *
  * --- Day 1: Report Repair ---
@@ -30,7 +32,7 @@
 
  In your expense report, what is the product of the three entries that sum to 2020?
 */
-// #define DEBUG
+#define DEBUG
 template<typename t_streamable>
 void debug_message(t_streamable message)
 {
@@ -41,9 +43,6 @@ void debug_message(t_streamable message)
 
 int day_1(bool use_stdin = false)
 {
-    // iostream performance hack
-    std::cin.tie(NULL);
-    std::ios_base::sync_with_stdio(false);
     // Main code
     int answer = 0;
     std::ifstream test_input("day1-input");
@@ -124,14 +123,90 @@ int day_1(bool use_stdin = false)
     //     }
     // }
 }
+/*
+ *
+ * Their password database seems to be a little corrupted: some of the
+ * passwords wouldn't have been allowed by the Official Toboggan Corporate
+ * Policy that was in effect when they were chosen.
+ *
+ * To try to debug the problem, they have created a list (your puzzle input)
+ * of passwords (according to the corrupted database) and the corporate policy
+ * when that password was set.
+ *
+ * For example, suppose you have the following list:
+ *
+ * 1-3 a: abcde
+ * 1-3 b: cdefg
+ * 2-9 c: ccccccccc
+ *
+ * Each line gives the password policy and then the password.
+ * The password policy indicates the lowest and highest number of times a given
+ * letter must appear for the password to be valid. For example, 1-3 a means
+ *  that the password must contain a at least 1 time and at most 3 times.
+ *
+ * In the above example, 2 passwords are valid. The middle password, cdefg,
+ * is not; it contains no instances of b, but needs at least 1. The first
+ * and third passwords are valid: they contain one a or nine c, both within the limits of their respective policies.
+ *
+ * How many passwords are valid according to their policies?
+*/
 
-int main(int argc, char** argv)
+int day2()
 {
-    std::vector<int> puzzle_progress =
+    std::ifstream test_input_file("day2-input");
+    std::stringstream test_input;
+    test_input << test_input_file.rdbuf();
+    unsigned correct_passwords = 0;
+    while (!test_input.eof())
+    {
+        int character_count_lower_limit = 0;
+        int character_count_upper_limit = 0;
+        char character_restricted = 0;
+        unsigned character_restricted_count = 0;
+        std::string password;
+        test_input >> character_count_lower_limit;
+        test_input.get(); // Destroy leading negative sign '-'
+        test_input >> character_count_upper_limit
+                   >> character_restricted;
+        test_input.get(); // Destroy leading colon ':'
+        test_input >> password;
+        // debug_message(character_count_lower_limit);
+        // debug_message(character_count_upper_limit);
+        // debug_message(character_restricted);
+        // debug_message(password);
+        for (const char& password_character : password)
         {
-            day_1(),
-        };
+            character_restricted_count += (password_character == character_restricted);
+        }
+        // debug_message(character_restricted_count);
+        if ((character_count_lower_limit <= character_restricted_count) &&
+            (character_restricted_count <= character_count_upper_limit))
+        {
+            ++correct_passwords;
+        }
+        else
+        {
+            debug_message(password);
+            debug_message(correct_passwords);
+        }
+    }
 
-
+    std::cout << "Correct Password Count:" << correct_passwords
+              << std::endl        ;
     return EXIT_SUCCESS;
-}
+     }
+        int main(int argc, char** argv)
+    {
+        // iostream performance hack
+        std::cin.tie(nullptr);
+        std::ios_base::sync_with_stdio(false);
+
+        std::vector<int> puzzle_progress =
+            {
+                // day_1(),
+                day2()
+            };
+
+
+        return EXIT_SUCCESS;
+    }
