@@ -31,7 +31,8 @@
  In your expense report, what is the product of the three entries that sum to 2020?
 */
 #define DEBUG
-void debug_message(std::string message)
+template<typename t_streamable>
+void debug_message(t_streamable message)
 {
 #ifdef DEBUG
     std::cout << "advent_of_code DEBUG:" << message << "\n";
@@ -42,35 +43,82 @@ int day_1(bool use_stdin = false)
 {
     int answer = 0;
     std::ifstream test_input("day1-input");
-    std::vector<int> test_input_formatted(100);
+    std::vector<int> test_input_formatted;
+    test_input_formatted.reserve(100);
+    int count = 0;
+    debug_message("Formatting input data");
     for (; !test_input.eof() ;)
     {
         static int tmp;
         test_input >> tmp;
         test_input_formatted.push_back(tmp);
-        debug_message(std::to_string(tmp));
     }
     test_input_formatted.shrink_to_fit();
-    for (const int& interogated : test_input_formatted)
+    test_input.close();
+    bool answer_not_found = true;
+    int input_position[] = {0, 0, 0};
+    unsigned search_pass = 0;
+    debug_message("Beginning search");
+    do
     {
-        for (const int& interogator_1 : test_input_formatted)
+        const int combo1 = test_input_formatted[input_position[1-1]];
+        const int combo2 = test_input_formatted[input_position[2-1]];
+        const int combo3 = test_input_formatted[input_position[3-1]];
+        int sum = combo1 + combo2 + combo3;
+        if (sum == 2020)
         {
-            for (const int& interogator_2 : test_input_formatted)
+            int answer_product = combo1 * combo2 * combo3;
+            debug_message("Presumed answer components:");
+            debug_message(combo1);
+            debug_message(combo2);
+            debug_message(combo3);
+            debug_message("Answer Product:");
+            debug_message(answer_product);
+            answer_not_found = false;
+        }
+        // debug_message("Search pass:");
+        // debug_message(input_position[search_pass]);
+        ++input_position[0];
+
+        if (input_position[0] >= test_input_formatted.size())
+        {
+            input_position[0] = 0;
+            ++input_position[1];
+            if (input_position[1] >= test_input_formatted.size())
             {
-                int result = interogated + interogator_1 + interogator_2;
-                debug_message(std::to_string(result));
-                // debug_message("" + std::to_string(result == 2020));
-                if (result == 2020)
+                input_position[1] = 0;
+                ++input_position[2];
+                if (input_position[2] == test_input_formatted.size() && answer_not_found)
                 {
-                    answer = interogated * interogator_1 * interogator_2;
-                    debug_message(std::to_string(answer));
-                    std::cout << answer << "\n";
-                    test_input.close();
-                    return EXIT_SUCCESS;
+                    std::cout << "Answer not found: Exiting";
+                    return EXIT_FAILURE;
                 }
             }
         }
-    }
+
+    } while (answer_not_found);
+    return EXIT_SUCCESS;
+
+// for (const int& interogated : test_input_formatted)
+    // {
+    //     for (const int& interogator_1 : test_input_formatted)
+    //     {
+    //         for (const int& interogator_2 : test_input_formatted)
+    //         {
+    //             int result = interogated + interogator_1 + interogator_2;
+    //             debug_message(std::to_string(result));
+    //             // debug_message("" + std::to_string(result == 2020));
+    //             if (result == 2020)
+    //             {
+    //                 answer = interogated * interogator_1 * interogator_2;
+    //                 debug_message(std::to_string(answer));
+    //                 std::cout << answer << "\n";
+    //                 test_input.close();
+    //                 return EXIT_SUCCESS;
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 int main(int argc, char** argv)
