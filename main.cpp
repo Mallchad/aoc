@@ -30,7 +30,7 @@
 
  In your expense report, what is the product of the three entries that sum to 2020?
 */
-#define DEBUG
+// #define DEBUG
 template<typename t_streamable>
 void debug_message(t_streamable message)
 {
@@ -41,12 +41,15 @@ void debug_message(t_streamable message)
 
 int day_1(bool use_stdin = false)
 {
+    // iostream performance hack
+    std::cin.tie(NULL);
+    std::ios_base::sync_with_stdio(false);
+    // Main code
     int answer = 0;
     std::ifstream test_input("day1-input");
     std::vector<int> test_input_formatted;
     test_input_formatted.reserve(100);
     int count = 0;
-    debug_message("Formatting input data");
     for (; !test_input.eof() ;)
     {
         static int tmp;
@@ -58,9 +61,11 @@ int day_1(bool use_stdin = false)
     bool answer_not_found = true;
     int input_position[] = {0, 0, 0};
     unsigned search_pass = 0;
-    debug_message("Beginning search");
+    // debug_message("input size");
+    // debug_message(test_input_formatted.size());
     do
     {
+        debug_message(input_position[0]);
         const int combo1 = test_input_formatted[input_position[1-1]];
         const int combo2 = test_input_formatted[input_position[2-1]];
         const int combo3 = test_input_formatted[input_position[3-1]];
@@ -72,8 +77,7 @@ int day_1(bool use_stdin = false)
             debug_message(combo1);
             debug_message(combo2);
             debug_message(combo3);
-            debug_message("Answer Product:");
-            debug_message(answer_product);
+            std::cout << "Answer Product:" << answer_product;
             answer_not_found = false;
         }
         // debug_message("Search pass:");
@@ -95,7 +99,7 @@ int day_1(bool use_stdin = false)
                 }
             }
         }
-
+       
     } while (answer_not_found);
     return EXIT_SUCCESS;
 
