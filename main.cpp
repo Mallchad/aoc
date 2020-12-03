@@ -32,7 +32,7 @@
 
  In your expense report, what is the product of the three entries that sum to 2020?
 */
-#define DEBUG
+// #define DEBUG
 template<typename t_streamable>
 void debug_message(t_streamable message)
 {
@@ -154,8 +154,10 @@ int day_1(bool use_stdin = false)
 int day2()
 {
     std::ifstream test_input_file("day2-input");
+
     std::stringstream test_input;
     test_input << test_input_file.rdbuf();
+    test_input_file.close();
     unsigned correct_passwords = 0;
     while (!test_input.eof())
     {
