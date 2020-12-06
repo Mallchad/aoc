@@ -40,89 +40,6 @@ void debug_message(t_streamable message)
     std::cout << "advent_of_code DEBUG:" << message << "\n";
 #endif
 }
-
-int day_1(bool use_stdin = false)
-{
-    // Main code
-    int answer = 0;
-    std::ifstream test_input("day1-input");
-    std::vector<int> test_input_formatted;
-    test_input_formatted.reserve(100);
-    int count = 0;
-    for (; !test_input.eof() ;)
-    {
-        static int tmp;
-        test_input >> tmp;
-        test_input_formatted.push_back(tmp);
-    }
-    test_input_formatted.shrink_to_fit();
-    test_input.close();
-    bool answer_not_found = true;
-    int input_position[] = {0, 0, 0};
-    unsigned search_pass = 0;
-    // debug_message("input size");
-    // debug_message(test_input_formatted.size());
-    do
-    {
-        debug_message(input_position[0]);
-        const int combo1 = test_input_formatted[input_position[1-1]];
-        const int combo2 = test_input_formatted[input_position[2-1]];
-        const int combo3 = test_input_formatted[input_position[3-1]];
-        int sum = combo1 + combo2 + combo3;
-        if (sum == 2020)
-        {
-            int answer_product = combo1 * combo2 * combo3;
-            debug_message("Presumed answer components:");
-            debug_message(combo1);
-            debug_message(combo2);
-            debug_message(combo3);
-            std::cout << "Answer Product:" << answer_product;
-            answer_not_found = false;
-        }
-        // debug_message("Search pass:");
-        // debug_message(input_position[search_pass]);
-        ++input_position[0];
-
-        if (input_position[0] >= test_input_formatted.size())
-        {
-            input_position[0] = 0;
-            ++input_position[1];
-            if (input_position[1] >= test_input_formatted.size())
-            {
-                input_position[1] = 0;
-                ++input_position[2];
-                if (input_position[2] == test_input_formatted.size() && answer_not_found)
-                {
-                    std::cout << "Answer not found: Exiting";
-                    return EXIT_FAILURE;
-                }
-            }
-        }
-       
-    } while (answer_not_found);
-    return EXIT_SUCCESS;
-
-// for (const int& interogated : test_input_formatted)
-    // {
-    //     for (const int& interogator_1 : test_input_formatted)
-    //     {
-    //         for (const int& interogator_2 : test_input_formatted)
-    //         {
-    //             int result = interogated + interogator_1 + interogator_2;
-    //             debug_message(std::to_string(result));
-    //             // debug_message("" + std::to_string(result == 2020));
-    //             if (result == 2020)
-    //             {
-    //                 answer = interogated * interogator_1 * interogator_2;
-    //                 debug_message(std::to_string(answer));
-    //                 std::cout << answer << "\n";
-    //                 test_input.close();
-    //                 return EXIT_SUCCESS;
-    //             }
-    //         }
-    //     }
-    // }
-}
 /*
  *
  * Their password database seems to be a little corrupted: some of the
@@ -149,7 +66,7 @@ int day_1(bool use_stdin = false)
  * and third passwords are valid: they contain one a or nine c, both within the limits of their respective policies.
  *
  * How many passwords are valid according to their policies?
-*/
+ */
 
 int day2()
 {
@@ -161,35 +78,35 @@ int day2()
     unsigned correct_passwords = 0;
     while (!test_input.eof())
     {
-        int character_count_lower_limit = 0;
-        int character_count_upper_limit = 0;
-        char character_restricted = 0;
-        unsigned character_restricted_count = 0;
-        std::string password;
-        test_input >> character_count_lower_limit;
-        test_input.get(); // Destroy leading negative sign '-'
-        test_input >> character_count_upper_limit
-                   >> character_restricted;
-        test_input.get(); // Destroy leading colon ':'
-        test_input >> password;
-        // debug_message(character_count_lower_limit);
-        // debug_message(character_count_upper_limit);
-        // debug_message(character_restricted);
-        // debug_message(password);
-        for (const char& password_character : password)
+      int character_position1 = 0;
+      int character_position2 = 0;
+      char character_restricted = 0;
+      unsigned character_restricted_count = 0;
+      std::string password;
+      test_input >> character_position1;
+      test_input.get(); // Destroy leading negative sign '-'
+      test_input >> character_position2
+                 >> character_restricted;
+      test_input.get(); // Destroy leading colon ':'
+      test_input >> password;
+      // debug_message(character_position1);
+      // debug_message(character_position2);
+      // debug_message(character_restricted);
+      // debug_message(password);
+      bool character_check1 = password[character_position1-1] == character_restricted;
+      bool character_check2 = password[character_position2-1] == character_restricted;
+      if (character_check1 ^ character_check2)
+      {
+          ++correct_passwords;
+          debug_message(correct_passwords);
+          // debug_message(password);
+          debug_message("true");
+      }
+      else
         {
-            character_restricted_count += (password_character == character_restricted);
-        }
-        // debug_message(character_restricted_count);
-        if ((character_count_lower_limit <= character_restricted_count) &&
-            (character_restricted_count <= character_count_upper_limit))
-        {
-            ++correct_passwords;
-        }
-        else
-        {
-            debug_message(password);
-            debug_message(correct_passwords);
+            // debug_message(password);
+            debug_message("false");
+            // debug_message(correct_passwords);
         }
     }
 
